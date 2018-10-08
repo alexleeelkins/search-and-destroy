@@ -13,6 +13,8 @@
 		FA374B052163F41C0011A29F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA374B042163F41C0011A29F /* Assets.xcassets */; };
 		FA374B082163F41C0011A29F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA374B062163F41C0011A29F /* LaunchScreen.storyboard */; };
 		FA531F132163F50F007D953C /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA531F122163F50F007D953C /* SongModel.swift */; };
+		FAAC1F6121656187004D7AEC /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAC1F6021656187004D7AEC /* SearchService.swift */; };
+		FAAC1F6321656194004D7AEC /* SearchResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAC1F6221656194004D7AEC /* SearchResultModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		FA374B072163F41C0011A29F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA374B092163F41C0011A29F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA531F122163F50F007D953C /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
+		FAAC1F6021656187004D7AEC /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		FAAC1F6221656194004D7AEC /* SearchResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 				FA374B062163F41C0011A29F /* LaunchScreen.storyboard */,
 				FA374B092163F41C0011A29F /* Info.plist */,
 				FA531F122163F50F007D953C /* SongModel.swift */,
+				FAAC1F6021656187004D7AEC /* SearchService.swift */,
+				FAAC1F6221656194004D7AEC /* SearchResultModel.swift */,
 			);
 			path = "Search and Destroy";
 			sourceTree = "<group>";
@@ -139,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA531F132163F50F007D953C /* SongModel.swift in Sources */,
+				FAAC1F6121656187004D7AEC /* SearchService.swift in Sources */,
+				FAAC1F6321656194004D7AEC /* SearchResultModel.swift in Sources */,
 				FA374B002163F41B0011A29F /* ViewController.swift in Sources */,
 				FA374AFE2163F41B0011A29F /* AppDelegate.swift in Sources */,
 			);

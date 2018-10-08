@@ -8,14 +8,10 @@
 
 import Foundation
 
-class Song: Searchable {
+class Song {
     var title: String = ""
 
     init(title: String) {
         self.title = title
     }
-}
-
-protocol Searchable {
-    var title: String { get set }
 }

@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
-    var filteredSongs = [Song]()
+    var filteredSongs = [SearchResult]()
     let songs = [
         Song(title: "12-Bar Original"),
         Song(title: "A Day in the Life"),
@@ -336,9 +336,7 @@ class ViewController: UIViewController {
     }
 
     func filterContentFor(searchText: String) {
-        filteredSongs = songs.filter({ (song) -> Bool in
-            return song.title.lowercased().contains(searchText.lowercased())
-        })
+        filteredSongs = SearchService.search(forString: searchText, inSearchable: songs)
         tableView.reloadData()
     }
 
@@ -355,16 +353,23 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let song: Song
+        let filteredSong: SearchResult
         if isFiltering() {
-            song = filteredSongs[indexPath.row]
+            filteredSong = filteredSongs[indexPath.row]
+            cell.textLabel?.text = filteredSong.song?.title
+            cell.detailTextLabel?.text = {
+                if filteredSong.weight > 0 {
+                    return String(filteredSong.weight)
+                }
+                return ""
+            }()
         } else {
             song = songs[indexPath.row]
+            cell.textLabel?.text = song.title
+            cell.detailTextLabel?.text = ""
         }
-        cell.textLabel?.text = song.title
         return cell
     }
-
-
 }
 
 extension ViewController: UISearchResultsUpdating {
