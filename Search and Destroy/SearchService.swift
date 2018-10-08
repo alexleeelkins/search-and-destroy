@@ -9,54 +9,74 @@
 import Foundation
 
 class SearchService {
-    static func search(forString: String, inSearchable: [Song]) -> [SearchResult] {
+    static func search(forString: String, inSearchable: [Song], completion: ([SearchResult]) -> ()) {
         guard forString.count > 0, inSearchable.count > 0 else {
-            return [SearchResult]()
+            completion([SearchResult]())
+            return
         }
         var results = [SearchResult]()
         inSearchable.forEach { (searchable) in
             let searchResult = SearchResult()
             searchResult.song = searchable
             if let searchableSong = searchResult.song {
-                let searchableSongTitle = searchableSong.title.replacingOccurrences(of: "[^0-9a-zA-Z ]", with: "", options: .regularExpression).lowercased()
                 for searchingForStringWord in forString.split(separator: " ") {
-                    if searchableSongTitle.starts(with: searchingForStringWord.lowercased()) {
-                        print("Searchable song title \"\(searchableSongTitle)\" starts with searching for string word \"\(searchingForStringWord.lowercased())\", +5")
-                        searchResult.weight += 5
-                    }
-                    if searchableSongTitle == searchingForStringWord {
-                        print("Searchable song title \"\(searchableSongTitle)\" is exactly searching for string word \"\(searchingForStringWord.lowercased())\", +5")
-                        searchResult.weight += 5
-                    }
-                    for searchableSongTitleWord in searchableSongTitle.split(separator: " ") {
-                        print(searchableSongTitleWord)
-                        let searchingForStringWord = searchingForStringWord.replacingOccurrences(of: "[^0-9a-zA-Z ]", with: "", options: .regularExpression).lowercased()
-                        if searchableSongTitleWord.contains(searchingForStringWord.lowercased()) {
-                            print("Cleaned searchable song title word \"\(searchableSongTitleWord)\" contains searching for string word \"\(searchingForStringWord.lowercased())\", +1")
-                            searchResult.weight += 1
-                        }
-                        if searchableSongTitleWord == searchingForStringWord.lowercased() {
-                            print("Cleaned searchable song title word \"\(searchableSongTitleWord)\" is exactly searching for string word \"\(searchingForStringWord).lowercased()\", +1")
-                            searchResult.weight += 1
-                        }
-                        if searchableSongTitleWord.starts(with: searchingForStringWord.lowercased()) {
-                            if (searchingForStringWord.count > 1) {
-                                print("Cleaned searchable song title word \"\(searchableSongTitleWord)\" starts with searching for string word \"\(searchingForStringWord.lowercased())\", +1")
-                                searchResult.weight += 1
-                            }
-                        }
-                        print(searchableSongTitleWord)
+                    searchResult.weight += process(rule: .startsWith, needle: String(searchingForStringWord), haystack: searchableSong.title).rawValue
+                    searchResult.weight += process(rule: .isExactly, needle: String(searchingForStringWord), haystack: searchableSong.title).rawValue
+                    for searchableSongTitleWord in searchableSong.title.split(separator: " ") {
+                        searchResult.weight += process(rule: .contains, needle: String(searchingForStringWord), haystack: String(searchableSongTitleWord)).rawValue
+                        searchResult.weight += process(rule: .isExactly, needle: String(searchingForStringWord), haystack: String(searchableSongTitleWord)).rawValue
+                        searchResult.weight += process(rule: .startsWith, needle: String(searchingForStringWord), haystack: String(searchableSongTitleWord)).rawValue
                     }
                 }
             }
             results.append(searchResult)
         }
         results.sort { (a, b) -> Bool in
-            if a.weight != b.weight {
-                return a.weight > b.weight
-            }
-            return (a.song?.title ?? "") < (b.song?.title ?? "")
+            return a.weight > b.weight
         }
-        return results
+        completion(results)
+    }
+
+    private static func process(rule: SearchRule, needle: String, haystack: String) -> SearchRuleWeight {
+        let needleString = needle.lowercased()
+        let needleStringCleaned = needleString.replacingOccurrences(of: "[^0-9a-zA-Z]", with: "", options: .regularExpression)
+        let haystackString = haystack.lowercased()
+        let haystackStringCleaned = haystackString.replacingOccurrences(of: "[^0-9a-zA-Z]", with: "", options: .regularExpression)
+        switch rule {
+        case .contains:
+            if haystackString.contains(needleString) || haystackStringCleaned.contains(needleString) || haystackString.contains(needleStringCleaned) || haystackStringCleaned.contains(needleStringCleaned) {
+//                print("Rule matched. Adding \(SearchRuleWeight.contains.rawValue) weight.")
+                return .contains
+            }
+        case .startsWith:
+            if haystackString.starts(with: needleString) || haystackStringCleaned.starts(with: needleString) || haystackString.starts(with: needleStringCleaned) || haystackStringCleaned.starts(with: needleStringCleaned) {
+//                print("Rule matched. Adding \(SearchRuleWeight.startsWith.rawValue) weight.")
+                return .startsWith
+            }
+            break;
+        case .isExactly:
+            if haystackString == needleString || haystackStringCleaned == needleString || haystackString == needleStringCleaned || haystackStringCleaned == needleStringCleaned {
+//                print("Rule matched. Adding \(SearchRuleWeight.isExactly.rawValue) weight.")
+                return .isExactly
+            }
+            break;
+        default:
+            return .none;
+        }
+        return .none;
+    }
+
+    enum SearchRule {
+        case contains
+        case startsWith
+        case isExactly
+        case none
+    }
+
+    enum SearchRuleWeight: Int {
+        case contains = 1
+        case startsWith = 2
+        case isExactly = 3
+        case none = 0
     }
 }

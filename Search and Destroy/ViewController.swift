@@ -336,8 +336,12 @@ class ViewController: UIViewController {
     }
 
     func filterContentFor(searchText: String) {
-        filteredSongs = SearchService.search(forString: searchText, inSearchable: songs)
-        tableView.reloadData()
+        SearchService.search(forString: searchText, inSearchable: songs, completion: { results in
+            filteredSongs = results
+            OperationQueue.main.addOperation {
+                self.tableView.reloadData()
+            }
+        })
     }
 
     func isFiltering() -> Bool {

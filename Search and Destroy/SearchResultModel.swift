@@ -11,4 +11,5 @@ import Foundation
 class SearchResult {
     var song: Song? = nil
     var weight: Int = 0
+    var matchedSearchRules = [SearchService.SearchRule]()
 }
